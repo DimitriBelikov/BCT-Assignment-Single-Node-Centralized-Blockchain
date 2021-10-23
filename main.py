@@ -8,15 +8,15 @@ class MinerNode:
 	def __init__(self, difficulty):
 		self.difficulty = difficulty
 		self.lastBlock = dict()
-		self.address = sha256('MinerNode1'.encode()).hexdigest()
 
 	def __initialize(self):
-		Database.initializeUser()
+		self.address = Database.initializeUser()
 		Database.initializeDB()
 
 	def __mineBlock(self, transactionData):
 		nonce, blockNumber, transactionStatus = 1, 0, 'Not Verified'
 
+		sleep(2)
 		#Verify Transaction
 		if (Transaction.verifyTransaction(transactionData)):
 			transactionStatus = 'Verified'

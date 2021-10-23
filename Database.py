@@ -5,13 +5,15 @@ class Database:
 	@staticmethod
 	def initializeUser():
 		userKeys = {}
-		for x in range(10):
+		for x in range(11):
 			privateKey = PrivateKey()
 			publicKey = privateKey.publicKey()
 			userKeys[publicKey.toString()] = privateKey.toString()
 
 		with open('UserKeys.json', 'w+') as userKey:
 			userKey.write(dumps(userKeys, indent=4))
+		
+		return PrivateKey().publicKey().toString()
 
 	@staticmethod
 	def initializeDB():

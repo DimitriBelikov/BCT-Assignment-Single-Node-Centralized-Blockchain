@@ -12,7 +12,7 @@ class Transaction:
 		with open('UTXODb.json', 'r') as utxos:
 			utxoData = load(utxos)
 		
-		userList = list(utxoData.keys())
+		userList = list(utxoData.keys())[:-1]
 		fromAcc, gasFees = choice(userList), random()/(10**9)
 		outputsData =  Transaction.__generateOutputsData(userList, fromAcc)
 		inputsData = Transaction.__getInputUtxos(utxoData, fromAcc, outputsData[1], gasFees)
