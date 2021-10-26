@@ -8,14 +8,19 @@ from ellipticcurve.publicKey import PublicKey
 
 class Transaction:
 	@staticmethod
-	def genRandomiseTranx():
+	def genRandomiseTranx(fromAcc=None, toAcc=None, amount=None):
 		with open('UTXODb.json', 'r') as utxos:
 			utxoData = load(utxos)
 		
-		userList = list(utxoData.keys())[:-1]
-		fromAcc, gasFees = choice(userList), random()/(10**9)
-		outputsData =  Transaction.__generateOutputsData(userList, fromAcc)
-		inputsData = Transaction.__getInputUtxos(utxoData, fromAcc, outputsData[1], gasFees)
+		if(fromAcc == None):
+			userList = list(utxoData.keys())[:-1]
+			fromAcc, gasFees = choice(userList), random()/(10**9)
+			outputsData =  Transaction.__generateOutputsData(userList, fromAcc)
+			inputsData = Transaction.__getInputUtxos(utxoData, fromAcc, outputsData[1], gasFees)
+		else:
+			userList, gasFees = [fromAcc, toAcc], random()/(10**9)
+			outputsData = Transaction.__generateOutputsData(userList, fromAcc, amountToSend=amount)
+			inputsData = Transaction.__getInputUtxos(utxoData, fromAcc, outputsData[1], gasFees)
 
 		newTranx = Transaction.__createTranx(inputsData, outputsData[1], outputsData[0], gasFees)
 
@@ -51,19 +56,27 @@ class Transaction:
 		return transaction
 	
 	@staticmethod
-	def __generateOutputsData(userList, fromAcc):
+	def __generateOutputsData(userList, fromAcc, amountToSend=None):
 		userList.remove(fromAcc)
 		outputsData, outputTotal = [], 0
-		for x in range(randint(1,3)):
-			toAcc, amount = choice(userList), random()
-			outputTotal += amount
-			userList.remove(toAcc)
-			
+
+		if amountToSend == None:
+			for x in range(randint(1,3)):
+				toAcc, amount = choice(userList), random()
+				outputTotal += amount
+				userList.remove(toAcc)
+				
+				outputsData.append({
+					"to": toAcc,
+					"amount": amount
+				})
+		else:
+			outputTotal += float(amountToSend)
 			outputsData.append({
-				"to": toAcc,
-				"amount": amount
+					"to": userList[0],
+					"amount": amountToSend
 			})
-		
+			
 		return outputsData, outputTotal
 
 	@staticmethod

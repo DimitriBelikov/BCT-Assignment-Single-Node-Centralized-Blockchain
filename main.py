@@ -63,11 +63,20 @@ class MinerNode:
 	def __start(self):
 		#print(dumps(Transaction.genRandomiseTranx(), indent=2))
 		while(True):
+			# Auto-MODE
 			#Generate a Randomized Transaction
 			sleep(4) #To add some sense of Trueness
 			newTranx = Transaction.genRandomiseTranx()
 			print('--> Generated a Randomized Transaction')
 			print(dumps(newTranx, indent=2))
+
+			# CLI Mode
+			# print('Enter Transaction Details')
+			# fromAcc = input("Enter Sender's Account = ")
+			# toAcc = input("Enter Receiver's Account = ")
+			# amount = input("Enter Amount to send = ")
+			# newTranx = Transaction.genRandomiseTranx(fromAcc=fromAcc, toAcc=toAcc, amount=amount)
+			# print(dumps(newTranx, indent=2))
 
 			#Mine The Transaction in a Block
 			newBlock = self.__mineBlock(newTranx)
