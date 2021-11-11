@@ -22,6 +22,10 @@ class Transaction:
 			outputsData = Transaction.__generateOutputsData(userList, fromAcc, amountToSend=amount)
 			inputsData = Transaction.__getInputUtxos(utxoData, fromAcc, outputsData[1], gasFees)
 
+		if inputsData == 'Rolling Back':
+			print('\n-->Rolling Back Transaction...... Insufficient Funds\n')
+			return 'Rollback'
+
 		newTranx = Transaction.__createTranx(inputsData, outputsData[1], outputsData[0], gasFees)
 
 		return newTranx
@@ -82,12 +86,15 @@ class Transaction:
 	@staticmethod
 	def __getInputUtxos(utxoData, fromAcc, outputTotal, gasFees):
 		inputUtxos, inputTotal = [], 0
-		while(True):
+		while(len(utxoData[fromAcc]) != 0):
 			utxo = utxoData[fromAcc].pop(0)
 			inputUtxos.append(utxo)
 			inputTotal += utxo['amount']
 			if inputTotal > outputTotal + gasFees:
 				break
+		
+		if inputTotal < outputTotal + gasFees:
+			return 'Rolling Back'
 		
 		with open('UTXODb.json', 'w') as utxos:
 			utxos.write(dumps(utxoData, indent=4))

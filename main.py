@@ -76,22 +76,23 @@ class MinerNode:
 			# toAcc = input("Enter Receiver's Account = ")
 			# amount = input("Enter Amount to send = ")
 			# newTranx = Transaction.genRandomiseTranx(fromAcc=fromAcc, toAcc=toAcc, amount=amount)
-			# print(dumps(newTranx, indent=2))
+			if newTranx != 'Rollback':
+				#print(dumps(newTranx, indent=2))
 
-			#Mine The Transaction in a Block
-			newBlock = self.__mineBlock(newTranx)
-			print('--> New Block Mined')
+				#Mine The Transaction in a Block
+				newBlock = self.__mineBlock(newTranx)
+				print('--> New Block Mined')
 
-			#Update UTXO's database
-			Database.updateUtxoDb(newTranx['Data']['output'], newBlock['coinbaseTranx'])
-			print("--> Newly Generated UTXO's updated")
+				#Update UTXO's database
+				Database.updateUtxoDb(newTranx['Data']['output'], newBlock['coinbaseTranx'])
+				print("--> Newly Generated UTXO's updated")
 
-			#Add the newly mined Block to Blockchain
-			Database.updateBlockchain(newBlock)
-			print('--> New Block Added to chain of Blocks', end='\n\n')
+				#Add the newly mined Block to Blockchain
+				Database.updateBlockchain(newBlock)
+				print('--> New Block Added to chain of Blocks', end='\n\n')
 
-			#Place Last Block Data in Memory
-			self.lastBlock = newBlock
+				#Place Last Block Data in Memory
+				self.lastBlock = newBlock
 		
 if __name__ == '__main__':
 	node = MinerNode(difficulty=5)
